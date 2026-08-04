@@ -33,4 +33,6 @@ This package contains files (pid.h and pid.c) to implement a simple PID controll
 - [PID Controllers](https://tttapa.github.io/Pages/Arduino/Control-Theory/Motor-Fader/PID-Controllers.html)
 - [Arduino-PID-Library](https://github.com/br3ttb/Arduino-PID-Library)
 - [The practical aspects of PID control](https://link.springer.com/chapter/10.1007/978-1-4039-1457-6_18)
-
+- [Discretization of simulator, filter, and PID controller](https://www.mic-journal.no/PDF/ref/Haugen2010.pdf)
+- [Analysis and Implementation of Discrete Time PID Controllers using FPGA](http://www.irphouse.com/ijec/ijecv2n1_05.pdf)
+- [Digital Process Control](http://www.users.abo.fi/khaggblo/PDC/PDC10.pdf)

@@ -48,11 +48,11 @@ uint8_t pid_init(pid_t* self) {
     self->pv = 0.0f;  /* process variable (measured temperature in units of degC) */
     self->deadband = 0.0f;  /* deadband */
     self->error = 0.0f;  /* difference between setpoint and process varible */
-    self->error_last = 0.0f;  /* difference between setpoint and process varible */
-    self->error_last2 = 0.0f;  /* difference between setpoint and process varible */
-    self->error_lpf = 0.0f;  /* difference between setpoint and process varible */
-    self->error_lpf_last = 0.0f;  /* difference between setpoint and process varible */
-    self->error_lpf_last2 = 0.0f;  /* difference between setpoint and process varible */
+    self->error_last = 0.0f;
+    self->error_last2 = 0.0f;
+    self->error_lpf = 0.0f;
+    self->error_lpf_last = 0.0f;
+    self->error_lpf_last2 = 0.0f;
     self->control = 0.0f;  /* control function; output from the PID algorithm */
     self->control_limit_max = 0.0f;  /* maximum acceptable control output */
     self->control_limit_min = 0.0f;  /* minimum acceptable control output */
@@ -67,12 +67,12 @@ uint8_t pid_init(pid_t* self) {
  * @return
  */
 uint8_t pid_reset(pid_t* self) {
-    self->error = 0.0f;
+    self->error = 0.0f;  /* difference between setpoint and process varible */
     self->error_last = 0.0f;
-    self->error_last2 = 0.0f;  /* difference between setpoint and process varible */
-    self->error_lpf = 0.0f;  /* difference between setpoint and process varible */
-    self->error_lpf_last = 0.0f;  /* difference between setpoint and process varible */
-    self->error_lpf_last2 = 0.0f;  /* difference between setpoint and process varible */
+    self->error_last2 = 0.0f;
+    self->error_lpf = 0.0f;
+    self->error_lpf_last = 0.0f;
+    self->error_lpf_last2 = 0.0f;
     self->control = 0.0f;  /* control function; output from the PID algorithm */
     return 0;
 }
@@ -376,8 +376,10 @@ uint8_t pid_compute(pid_t* self, float pv, float* control) {
 
     /* Compute Rest of PID Output */
 
-    /* Discrete PID so the previous control value is added to the new control value; therefore,
-    the control value is a running sum (TODO: confirm authenticity of this comment!!!) */
+    /**
+     * Discrete PID so the previous control value is added to the new control value; therefore,
+     * the control value is a running sum (TODO: confirm authenticity of this comment!!!)
+     */
     self->control += control_kp + control_ti + control_td;
 
     /* Anti-wind-up via clamping */
