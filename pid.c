@@ -116,7 +116,9 @@ pid_status_t pid_get_proportional_gain(pid_t* self, float* kp)
 
 
 /**
- * @brief Set the integral gain, Ti
+ * @brief Set the integral time, Ti
+ * @note The integral term is zero when the integral time
+ *       is set to zero
  *
  * @param[in] self  An instance of pid_t
  * @param[in]   ti  integral time
@@ -137,7 +139,7 @@ pid_status_t pid_set_integral_time(pid_t* self, float ti)
 
 
 /**
- * @brief Get the intregral gain, Ti
+ * @brief Get the intregral time, Ti
  *
  * @param[in] self  An instance of pid_t
  * @param[out]  ti  integral time
@@ -151,7 +153,12 @@ pid_status_t pid_get_integral_time(pid_t* self, float* ti)
 
 
 /**
- * @brief Set the derivative gain, Td
+ * @brief Set the derivative time, Td
+ * @note The derivate term is disabled when the derivate
+ *       time is set to zero.
+ *
+ *       If the user sets the sampling period to zero,
+ *       then the derivate term is disabled.
  *
  * @param[in] self  An instance of pid_t
  * @param[in]   td  derivative time
@@ -172,7 +179,7 @@ pid_status_t pid_set_derivative_time(pid_t* self, float td)
 
 
 /**
- * @brief Get the derivative gain, Td
+ * @brief Get the derivative time, Td
  *
  * @param[in]  self  An instance of pid_t
  * @param[out]   td  derivative time
@@ -223,6 +230,8 @@ pid_status_t pid_get_gains(pid_t* self, float* kp, float* ti, float* td)
 
 /**
  * @brief Set the sampling period in units of seconds
+ * @note If the sampling period is set to zero, then the
+ *       derivate term is disabled.
  *
  * @param[in] self  An instance of pid_t
  * @param[in] gain  the sampling period in units of seconds
@@ -230,7 +239,14 @@ pid_status_t pid_get_gains(pid_t* self, float* kp, float* ti, float* td)
  */
 pid_status_t pid_set_sampling_period(pid_t* self, float period)
 {
-    self->ts = period;
+    if (period < 0.0f)
+    {
+        self->ts = 0.0f;
+    }
+    else
+    {
+        self->ts = period;
+    }
     return PID_SUCCESS;
 }
 
@@ -307,6 +323,8 @@ pid_status_t pid_get_setpoint(pid_t* self, float* sp)
 
 /**
  * @brief Set the PID deadband value
+ * @note The correction to the control variable will not be computed
+ *       when the measured error is within the deadband
  *
  * @param[in] self  An instance of pid_t
  * @param[in] deadband  the PID deadband value
@@ -401,11 +419,6 @@ pid_status_t pid_compute(pid_t* self, float pv, float* control)
     float control_td = 0.0f;
     float error_magnitude = 0.0f;
 
-    if ((self->ti == 0.0f) || (self->ts == 0.0f))
-    {
-        return PID_DIVIDE_BY_ZERO_ENCOUNTERED;
-    }
-
     /* Compute the error value */
     self->error = self->sp - self->pv;
     // self->error = -(self->sp - pv);
@@ -426,9 +439,13 @@ pid_status_t pid_compute(pid_t* self, float pv, float* control)
     {
         control_ti = (self->kp / self->ti) * (self->error * self->ts);
     }
-    control_td = (
-        (self->kp * self->td) * ( (self->error_lpf - 2 * self->error_lpf_last + self->error_lpf_last2) / self->ts )
-    );
+    if (self->ts != 0.0f)
+    {
+        control_td = (
+            (self->kp * self->td)
+            * ( (self->error_lpf - 2 * self->error_lpf_last + self->error_lpf_last2) / self->ts )
+        );
+    }
 
     /* Compute Rest of PID Output */
 
