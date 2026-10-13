@@ -33,9 +33,14 @@
 extern "C" {
 #endif
 
-#include <stdint.h>
-
 typedef struct pid_t pid_t;
+
+typedef enum {
+    PID_SUCCESS = 0,
+    PID_FAILURE,
+    PID_MEASURED_ERROR_WITHIN_DEADBAND,  /* the measured error is within the deadband */
+    PID_DIVIDE_BY_ZERO_ENCOUNTERED
+} pid_status_t;
 
 struct pid_t {
     float kp;  /* proportional gain */
@@ -57,27 +62,27 @@ struct pid_t {
     float control_limit_min;  /* minimum acceptable control output */
 };
 
-uint8_t pid_init(pid_t* self);
-uint8_t pid_reset(pid_t* self);
-uint8_t pid_set_proportional_gain(pid_t* self, float gain);
-uint8_t pid_get_proportional_gain(pid_t* self, float* gain);
-uint8_t pid_set_integral_time(pid_t* self, float ti);
-uint8_t pid_get_integral_time(pid_t* self, float* ti);
-uint8_t pid_set_derivative_time(pid_t* self, float td);
-uint8_t pid_get_derivative_time(pid_t* self, float* td);
-uint8_t pid_set_gains(pid_t* self, float kp, float ti, float td);
-uint8_t pid_get_gains(pid_t* self, float* kp, float* ti, float* td);
-uint8_t pid_set_sampling_period(pid_t* self, float period);
-uint8_t pid_get_sampling_period(pid_t* self, float* period);
-uint8_t pid_set_smoothing_factor(pid_t* self, float alpha);
-uint8_t pid_get_smoothing_factor(pid_t* self, float* alpha);
-uint8_t pid_set_setpoint(pid_t* self, float sp);
-uint8_t pid_get_setpoint(pid_t* self, float* sp);
-uint8_t pid_set_deadband(pid_t* self, float deadband);
-uint8_t pid_get_deadband(pid_t* self, float* deadband);
-uint8_t pid_set_control_limits(pid_t* self, float cl_max, float cl_min);
-uint8_t pid_get_control_limits(pid_t* self, float* cl_max, float* cl_min);
-uint8_t pid_compute(pid_t* self, float pv, float* control);
+pid_status_t pid_init(pid_t* self);
+pid_status_t pid_reset(pid_t* self);
+pid_status_t pid_set_proportional_gain(pid_t* self, float gain);
+pid_status_t pid_get_proportional_gain(pid_t* self, float* gain);
+pid_status_t pid_set_integral_time(pid_t* self, float ti);
+pid_status_t pid_get_integral_time(pid_t* self, float* ti);
+pid_status_t pid_set_derivative_time(pid_t* self, float td);
+pid_status_t pid_get_derivative_time(pid_t* self, float* td);
+pid_status_t pid_set_gains(pid_t* self, float kp, float ti, float td);
+pid_status_t pid_get_gains(pid_t* self, float* kp, float* ti, float* td);
+pid_status_t pid_set_sampling_period(pid_t* self, float period);
+pid_status_t pid_get_sampling_period(pid_t* self, float* period);
+pid_status_t pid_set_smoothing_factor(pid_t* self, float alpha);
+pid_status_t pid_get_smoothing_factor(pid_t* self, float* alpha);
+pid_status_t pid_set_setpoint(pid_t* self, float sp);
+pid_status_t pid_get_setpoint(pid_t* self, float* sp);
+pid_status_t pid_set_deadband(pid_t* self, float deadband);
+pid_status_t pid_get_deadband(pid_t* self, float* deadband);
+pid_status_t pid_set_control_limits(pid_t* self, float cl_max, float cl_min);
+pid_status_t pid_get_control_limits(pid_t* self, float* cl_max, float* cl_min);
+pid_status_t pid_compute(pid_t* self, float pv, float* control);
 
 #ifdef __cplusplus
 }  /* End of CPP guard */
