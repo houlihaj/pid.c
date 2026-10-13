@@ -401,6 +401,11 @@ pid_status_t pid_compute(pid_t* self, float pv, float* control)
     float control_td = 0.0f;
     float error_magnitude = 0.0f;
 
+    if ((self->ti == 0.0f) || (self->ts == 0.0f))
+    {
+        return PID_DIVIDE_BY_ZERO_ENCOUNTERED;
+    }
+
     /* Compute the error value */
     self->error = self->sp - self->pv;
     // self->error = -(self->sp - pv);
