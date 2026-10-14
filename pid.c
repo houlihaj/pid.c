@@ -427,6 +427,7 @@ pid_status_t pid_compute(pid_t* self, float pv, float* control)
     error_magnitude = (self->error < 0.0f) ? -self->error : self->error;
     if (error_magnitude < self->deadband)
     {
+        *control = 0.0f;
         return PID_MEASURED_ERROR_WITHIN_DEADBAND;
     }
 
