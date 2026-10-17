@@ -39,24 +39,24 @@
  */
 pid_status_t pid_init(pid_t* self)
 {
-    self->kp = 10.0f;  /* proportional gain */
-    self->ti = 0.0f;  /* integration time constant */
-    self->td = 0.0f;  /* derivative time constant */
-    self->ts = 0.001f;  /* FINAL - 1 ms converted to units of seconds */
-    self->alpha = 1.0f;  /* low-pass filter smoothing factor (alpha) */
-    self->sp = 35.0f;  /* setpoint temperature in units of degC */
-    self->pv = 0.0f;  /* process variable (measured temperature in units of degC) */
-    self->deadband = 0.0f;  /* deadband */
-    self->control_limit_max = 0.0f;  /* maximum acceptable control output */
-    self->control_limit_min = 0.0f;  /* minimum acceptable control output */
-
-    self->error = 0.0f;  /* difference between setpoint and process varible */
-    self->error_last = 0.0f;
-    self->error_last2 = 0.0f;
-    self->error_lpf = 0.0f;
-    self->error_lpf_last = 0.0f;
-    self->error_lpf_last2 = 0.0f;
-    self->control = 0.0f;  /* control function; output from the PID algorithm */
+    self->kp = 10.0;  /* proportional gain */
+    self->ti = 0.0;  /* integration time constant */
+    self->td = 0.0;  /* derivative time constant */
+    self->ts = 0.001;  /* FINAL - 1 ms converted to units of seconds */
+    self->alpha = 1.0;  /* low-pass filter smoothing factor (alpha) */
+    self->sp = 35.0;  /* setpoint temperature in units of degC */
+    self->pv = 0.0;  /* process variable (measured temperature in units of degC) */
+    self->deadband = 0.0;  /* deadband */
+    self->control_limit_max = 0.0;  /* maximum acceptable control output */
+    self->control_limit_min = 0.0;  /* minimum acceptable control output */
+    self->polarity = PID_POLARITY_DIRECT;
+    self->error = 0.0;  /* difference between setpoint and process varible */
+    self->error_last = 0.0;
+    self->error_last2 = 0.0;
+    self->error_lpf = 0.0;
+    self->error_lpf_last = 0.0;
+    self->error_lpf_last2 = 0.0;
+    self->control = 0.0;  /* control function; output from the PID algorithm */
     return PID_SUCCESS;
 }
 
@@ -69,13 +69,13 @@ pid_status_t pid_init(pid_t* self)
  */
 pid_status_t pid_reset(pid_t* self)
 {
-    self->error = 0.0f;  /* difference between setpoint and process varible */
-    self->error_last = 0.0f;
-    self->error_last2 = 0.0f;
-    self->error_lpf = 0.0f;
-    self->error_lpf_last = 0.0f;
-    self->error_lpf_last2 = 0.0f;
-    self->control = 0.0f;  /* control function; output from the PID algorithm */
+    self->error = 0.0;  /* difference between setpoint and process varible */
+    self->error_last = 0.0;
+    self->error_last2 = 0.0;
+    self->error_lpf = 0.0;
+    self->error_lpf_last = 0.0;
+    self->error_lpf_last2 = 0.0;
+    self->control = 0.0;  /* control function; output from the PID algorithm */
     return PID_SUCCESS;
 }
 
@@ -87,11 +87,11 @@ pid_status_t pid_reset(pid_t* self)
  * @param[in]   kp  proportional gain
  * @return
  */
-pid_status_t pid_set_proportional_gain(pid_t* self, float kp)
+pid_status_t pid_set_proportional_gain(pid_t* self, pid_real_t kp)
 {
-    if (kp < 0.0f)
+    if (kp < 0.0)
     {
-        self->kp = 0.0f;
+        self->kp = 0.0;
     }
     else
     {
@@ -108,7 +108,7 @@ pid_status_t pid_set_proportional_gain(pid_t* self, float kp)
  * @param[out]   kp  proportional gain
  * @return
  */
-pid_status_t pid_get_proportional_gain(pid_t* self, float* kp)
+pid_status_t pid_get_proportional_gain(pid_t* self, pid_real_t* kp)
 {
     *kp = self->kp;
     return PID_SUCCESS;
@@ -124,11 +124,11 @@ pid_status_t pid_get_proportional_gain(pid_t* self, float* kp)
  * @param[in]   ti  integral time
  * @return
  */
-pid_status_t pid_set_integral_time(pid_t* self, float ti)
+pid_status_t pid_set_integral_time(pid_t* self, pid_real_t ti)
 {
-    if (ti < 0.0f)
+    if (ti < 0.0)
     {
-        self->ti = 0.0f;
+        self->ti = 0.0;
     }
     else
     {
@@ -145,7 +145,7 @@ pid_status_t pid_set_integral_time(pid_t* self, float ti)
  * @param[out]  ti  integral time
  * @return
  */
-pid_status_t pid_get_integral_time(pid_t* self, float* ti)
+pid_status_t pid_get_integral_time(pid_t* self, pid_real_t* ti)
 {
     *ti = self->ti;
     return PID_SUCCESS;
@@ -164,11 +164,11 @@ pid_status_t pid_get_integral_time(pid_t* self, float* ti)
  * @param[in]   td  derivative time
  * @return
  */
-pid_status_t pid_set_derivative_time(pid_t* self, float td)
+pid_status_t pid_set_derivative_time(pid_t* self, pid_real_t td)
 {
-    if (td < 0.0f)
+    if (td < 0.0)
     {
-        self->td = 0.0f;
+        self->td = 0.0;
     }
     else
     {
@@ -185,7 +185,7 @@ pid_status_t pid_set_derivative_time(pid_t* self, float td)
  * @param[out]   td  derivative time
  * @return
  */
-pid_status_t pid_get_derivative_time(pid_t* self, float* td)
+pid_status_t pid_get_derivative_time(pid_t* self, pid_real_t* td)
 {
     *td = self->td;
     return PID_SUCCESS;
@@ -201,7 +201,7 @@ pid_status_t pid_get_derivative_time(pid_t* self, float* td)
  * @param[in] td  derivate gain
  * @return
  */
-pid_status_t pid_set_gains(pid_t* self, float kp, float ti, float td)
+pid_status_t pid_set_gains(pid_t* self, pid_real_t kp, pid_real_t ti, pid_real_t td)
 {
     pid_set_proportional_gain(self, kp);
     pid_set_integral_time(self, ti);
@@ -219,7 +219,7 @@ pid_status_t pid_set_gains(pid_t* self, float kp, float ti, float td)
  * @param[out] td  derivate gain
  * @return
  */
-pid_status_t pid_get_gains(pid_t* self, float* kp, float* ti, float* td)
+pid_status_t pid_get_gains(pid_t* self, pid_real_t* kp, pid_real_t* ti, pid_real_t* td)
 {
     *kp = self->kp;
     *ti = self->ti;
@@ -237,11 +237,11 @@ pid_status_t pid_get_gains(pid_t* self, float* kp, float* ti, float* td)
  * @param[in] gain  the sampling period in units of seconds
  * @return
  */
-pid_status_t pid_set_sampling_period(pid_t* self, float period)
+pid_status_t pid_set_sampling_period(pid_t* self, pid_real_t period)
 {
-    if (period < 0.0f)
+    if (period < 0.0)
     {
-        self->ts = 0.0f;
+        self->ts = 0.0;
     }
     else
     {
@@ -258,7 +258,7 @@ pid_status_t pid_set_sampling_period(pid_t* self, float period)
  * @param[out] gain  the sampling period in units of seconds
  * @return
  */
-pid_status_t pid_get_sampling_period(pid_t* self, float* period)
+pid_status_t pid_get_sampling_period(pid_t* self, pid_real_t* period)
 {
     *period = self->ts;
     return PID_SUCCESS;
@@ -272,7 +272,7 @@ pid_status_t pid_get_sampling_period(pid_t* self, float* period)
  * @param[in] alpha  the low-pass filter smoothing factor
  * @return
  */
-pid_status_t pid_set_smoothing_factor(pid_t* self, float alpha)
+pid_status_t pid_set_smoothing_factor(pid_t* self, pid_real_t alpha)
 {
     self->alpha = alpha;
     return PID_SUCCESS;
@@ -286,7 +286,7 @@ pid_status_t pid_set_smoothing_factor(pid_t* self, float alpha)
  * @param[out] alpha  the low-pass filter smoothing factor
  * @return
  */
-pid_status_t pid_get_smoothing_factor(pid_t* self, float* alpha)
+pid_status_t pid_get_smoothing_factor(pid_t* self, pid_real_t* alpha)
 {
     *alpha = self->alpha;
     return PID_SUCCESS;
@@ -300,7 +300,7 @@ pid_status_t pid_get_smoothing_factor(pid_t* self, float* alpha)
  * @param[in]   sp  the PID setpoint value
  * @return
  */
-pid_status_t pid_set_setpoint(pid_t* self, float sp)
+pid_status_t pid_set_setpoint(pid_t* self, pid_real_t sp)
 {
     self->sp = sp;
     return PID_SUCCESS;
@@ -314,7 +314,7 @@ pid_status_t pid_set_setpoint(pid_t* self, float sp)
  * @param[out]  sp  the PID setpoint value
  * @return
  */
-pid_status_t pid_get_setpoint(pid_t* self, float* sp)
+pid_status_t pid_get_setpoint(pid_t* self, pid_real_t* sp)
 {
     *sp = self->sp;
     return PID_SUCCESS;
@@ -330,7 +330,7 @@ pid_status_t pid_get_setpoint(pid_t* self, float* sp)
  * @param[in] deadband  the PID deadband value
  * @return
  */
-pid_status_t pid_set_deadband(pid_t* self, float deadband)
+pid_status_t pid_set_deadband(pid_t* self, pid_real_t deadband)
 {
     self->deadband = deadband;
     return PID_SUCCESS;
@@ -344,7 +344,7 @@ pid_status_t pid_set_deadband(pid_t* self, float deadband)
  * @param[out] deadband  the PID deadband value
  * @return
  */
-pid_status_t pid_get_deadband(pid_t* self, float* deadband)
+pid_status_t pid_get_deadband(pid_t* self, pid_real_t* deadband)
 {
     *deadband = self->deadband;
     return PID_SUCCESS;
@@ -359,7 +359,7 @@ pid_status_t pid_get_deadband(pid_t* self, float* deadband)
  * @param[in] cl_min  the minimum PID control limit
  * @return
  */
-pid_status_t pid_set_control_limits(pid_t* self, float cl_max, float cl_min)
+pid_status_t pid_set_control_limits(pid_t* self, pid_real_t cl_max, pid_real_t cl_min)
 {
     self->control_limit_max = cl_max;
     self->control_limit_min = cl_min;
@@ -375,10 +375,57 @@ pid_status_t pid_set_control_limits(pid_t* self, float cl_max, float cl_min)
  * @param[out] cl_min  the minimum PID control limit
  * @return
  */
-pid_status_t pid_get_control_limits(pid_t* self, float* cl_max, float* cl_min)
+pid_status_t pid_get_control_limits(pid_t* self, pid_real_t* cl_max, pid_real_t* cl_min)
 {
     *cl_max = self->control_limit_max;
     *cl_min = self->control_limit_min;
+    return PID_SUCCESS;
+}
+
+
+/**
+ * @brief Set the PID polarity
+ * @note
+ *
+ * 1) Control polarity determines whether a controller acts as negative feedback (corrective)
+ * or positive feedback (runaway).
+ *
+ * 2) Negative Feedback (Standard): The controller output pushes the system in the opposite direction
+ * of the error, reducing it towards a target setpoint.
+ *
+ * 3) Positive Feedback (Inverse): Pushes the system away from the setpoint. This is rarely used except in
+ * specific oscillation applications (e.g., active magnetic bearings)
+ *
+ * 4) The core function of the controller is e(t) = Setpoint - Process Value. The polarity of this error
+ * dictates how the Proportional (P), Integral (I), and Derivative (D) terms compute the final control output.
+ *
+ * 5) Direct Acting: As the Process Value exceeds the Setpoint, the controller output decreases.
+ * (Common for cooling or motor speed).
+ *
+ * 6) Reverse Acting: As the Process Value exceeds the Setpoint, the controller output increases.
+ * (Common for heating systems).
+ *
+ * @param[in]     self  An instance of pid_t
+ * @param[in] polarity  the PID polarity
+ * @return
+ */
+pid_status_t pid_set_polarity(pid_t* self, pid_polarity_t polarity)
+{
+    self->polarity = polarity;
+    return PID_SUCCESS;
+}
+
+
+/**
+ * @brief Get the PID polarity
+ *
+ * @param[in]      self  An instance of pid_t
+ * @param[out] polarity  the PID polarity
+ * @return
+ */
+pid_status_t pid_get_polarity(pid_t* self, pid_polarity_t* polarity)
+{
+    *polarity = self->polarity;
     return PID_SUCCESS;
 }
 
@@ -412,22 +459,28 @@ pid_status_t pid_get_control_limits(pid_t* self, float* cl_max, float* cl_min)
  * @param[out] control  control function; output from the PID algorithm
  * @return
  */
-pid_status_t pid_compute(pid_t* self, float pv, float* control)
+pid_status_t pid_compute(pid_t* self, pid_real_t pv, pid_real_t* control)
 {
-    float control_kp = 0.0f;
-    float control_ti = 0.0f;
-    float control_td = 0.0f;
-    float error_magnitude = 0.0f;
+    pid_real_t control_kp = 0.0;
+    pid_real_t control_ti = 0.0;
+    pid_real_t control_td = 0.0;
+    pid_real_t error_magnitude = 0.0;
 
     /* Compute the error value */
-    self->error = self->sp - self->pv;
-    // self->error = -(self->sp - pv);
+    if (self->polarity == PID_POLARITY_DIRECT)
+    {
+        self->error = self->sp - pv;;
+    }
+    else  /* self->polarity == PID_POLARITY_REVERSE */
+    {
+        self->error = -(self->sp - pv);
+    }
 
     /* Deadband logic */
-    error_magnitude = (self->error < 0.0f) ? -self->error : self->error;
+    error_magnitude = (self->error < 0.0) ? -self->error : self->error;
     if (error_magnitude < self->deadband)
     {
-        *control = 0.0f;
+        *control = 0.0;
         return PID_MEASURED_ERROR_WITHIN_DEADBAND;
     }
 
@@ -436,11 +489,11 @@ pid_status_t pid_compute(pid_t* self, float pv, float* control)
 
     /* Compute the correction terms */
     control_kp = self->kp * (self->error - self->error_last);
-    if (self->ti != 0.0f)
+    if (self->ti != 0.0)
     {
         control_ti = (self->kp / self->ti) * (self->error * self->ts);
     }
-    if (self->ts != 0.0f)
+    if (self->ts != 0.0)
     {
         control_td = (
             (self->kp * self->td)
@@ -482,9 +535,9 @@ int main(int argc, char** argv)
 {
     pid_t pid;  /* implement global PID object */
 
-    float kp = 10.0f;  /* define proportional gain */
-    float ti = 0.0f;   /* define integral time constant */
-    float td = 0.0f;   /* define derivative time constant */
+    pid_real_t kp = 10.0;  /* define proportional gain */
+    pid_real_t ti = 0.0;   /* define integral time constant */
+    pid_real_t td = 0.0;   /* define derivative time constant */
 
     pid_init(&pid);  /* initialize all members */
     pid_set_gains(&pid, kp, ti, td);  /* set all gains */
