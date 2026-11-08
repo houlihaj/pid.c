@@ -529,18 +529,3 @@ pid_status_t pid_compute(pid_t* self, pid_real_t pv, pid_real_t* control)
 
     return PID_SUCCESS;
 }
-
-
-int main(int argc, char** argv)
-{
-    pid_t pid;  /* implement global PID object */
-
-    pid_real_t kp = 10.0;  /* define proportional gain */
-    pid_real_t ti = 0.0;   /* define integral time constant */
-    pid_real_t td = 0.0;   /* define derivative time constant */
-
-    pid_init(&pid);  /* initialize all members */
-    pid_set_gains(&pid, kp, ti, td);  /* set all gains */
-
-    return 0;
-}
