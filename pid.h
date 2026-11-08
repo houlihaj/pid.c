@@ -36,7 +36,7 @@ extern "C" {
 
 typedef float pid_real_t;
 
-typedef struct pid_t pid_t;
+typedef struct pid_s pid_t;
 
 typedef enum {
     PID_SUCCESS = 0,
@@ -50,7 +50,7 @@ typedef enum {
     PID_POLARITY_REVERSE
 } pid_polarity_t;
 
-struct pid_t {
+struct pid_s {
     pid_real_t kp;  /* proportional gain */
     pid_real_t ti;  /* integral gain */
     pid_real_t td;  /* derivate gain */
